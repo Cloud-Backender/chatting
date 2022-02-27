@@ -20,15 +20,15 @@ public class MainController {
     List<RoomDto> roomList = new ArrayList<>();
     static int roomNumber = 0;
 
-    @RequestMapping( {"/chat", "/"})
+    @RequestMapping( {"/chat"})
     public ModelAndView chat() {
         ModelAndView mnv = new ModelAndView();
         mnv.setViewName("chat");
-        log.info("//////////// Chat VIew Mapped //////////////");
+        log.info("//////////// Chat View Mapped //////////////");
         return mnv;
     }
 
-    @RequestMapping( "/room")
+    @RequestMapping( {"/room", "/"})
     public ModelAndView room() {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("room");
