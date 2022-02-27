@@ -1,5 +1,6 @@
 package com.jj.chatting.handler;
 
+import lombok.extern.log4j.Log4j2;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -12,6 +13,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.util.HashMap;
 
 @Component
+@Log4j2
 public class SocketHandler extends TextWebSocketHandler {
 
     HashMap<String, WebSocketSession> map = new HashMap<>(); //웹소켓 세션을 담을 맵
@@ -29,6 +31,7 @@ public class SocketHandler extends TextWebSocketHandler {
                 e.printStackTrace();
             }
         }
+        log.info("/////////////////Message가 생성됐습니다. //////////////////");
     }
 
 
@@ -41,12 +44,14 @@ public class SocketHandler extends TextWebSocketHandler {
         jsonObject.put("type", "getId");
         jsonObject.put("sessionId", session.getId());
         session.sendMessage(new TextMessage(jsonObject.toJSONString()));
+        log.info("/////////////////소켓이 연결됐습니다. //////////////////");
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         //소켓 종료
         map.remove(session.getId());
+        log.info("/////////////////소켓이 종료됐습니다. //////////////////");
     }
 
     private static JSONObject jsonToObject(String jsonStr) {

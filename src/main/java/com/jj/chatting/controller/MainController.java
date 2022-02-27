@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Log4j2
 public class MainController {
 
-    @RequestMapping("/chat")
+    @RequestMapping(value = {"/chat", "/"})
     public ModelAndView chat() {
         ModelAndView mnv = new ModelAndView();
         mnv.setViewName("chat");
