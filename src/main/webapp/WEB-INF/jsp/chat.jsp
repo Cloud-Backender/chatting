@@ -5,7 +5,7 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <meta charset="UTF-8">
-    <title>chatting</title>
+    <title>Chating</title>
     <style>
         *{
             margin:0;
@@ -23,14 +23,18 @@
             border-left: 3px solid #FFBB00;
             margin-bottom: 20px;
         }
-        .chatting{
+        .chating{
             background-color: #000;
             width: 500px;
             height: 500px;
             overflow: auto;
         }
-        .chatting p{
-            color: #fff;
+        .chating .me{
+            color: #F6F6F6;
+            text-align: right;
+        }
+        .chating .others{
+            color: #FFE400;
             text-align: left;
         }
         input{
@@ -53,13 +57,29 @@
 
     function wsEvt() {
         ws.onopen = function(data){
-            //소켓이 열리면 초기화 세팅하기
+            //소켓이 열리면 동작
         }
 
         ws.onmessage = function(data) {
+            //메시지를 받으면 동작
             var msg = data.data;
             if(msg != null && msg.trim() != ''){
-                $("#chattings").append("<p>" + msg + "</p>");
+                var d = JSON.parse(msg);
+                if(d.type == "getId"){
+                    var si = d.sessionId != null ? d.sessionId : "";
+                    if(si != ''){
+                        $("#sessionId").val(si);
+                    }
+                }else if(d.type == "message"){
+                    if(d.sessionId == $("#sessionId").val()){
+                        $("#chating").append("<p class='me'>나 :" + d.msg + "</p>");
+                    }else{
+                        $("#chating").append("<p class='others'>" + d.userName + " :" + d.msg + "</p>");
+                    }
+
+                }else{
+                    console.warn("unknown type!")
+                }
             }
         }
 
@@ -83,16 +103,22 @@
     }
 
     function send() {
-        var uN = $("#userName").val();
-        var msg = $("#chatting").val();
-        ws.send(uN+" : "+msg);
+        var option ={
+            type: "message",
+            sessionId : $("#sessionId").val(),
+            userName : $("#userName").val(),
+            msg : $("#chatting").val()
+        }
+        ws.send(JSON.stringify(option))
         $('#chatting').val("");
     }
 </script>
 <body>
 <div id="container" class="container">
     <h1>채팅</h1>
-    <div id="chattings" class="chatting">
+    <input type="hidden" id="sessionId" value="">
+
+    <div id="chating" class="chating">
     </div>
 
     <div id="yourName">
